@@ -7,10 +7,29 @@
 
 import Foundation
 
-struct Recipe {
+struct Recipe: Identifiable {
+    // create id to make it identifiable for the ForEach in the VM
+    var id = UUID()
+    
+    var isValid: Bool {
+        return mainInformation.isValid && !ingredients.isEmpty && !directions.isEmpty
+    }
+    
     var mainInformation: MainInformation
     var ingredients: [Ingredient]
     var directions: [Direction]
+    
+    // regular recipe initializer
+    init(mainInformation: MainInformation, ingredients: [Ingredient], directions: [Direction]) {
+        self.mainInformation = mainInformation
+        self.ingredients = ingredients
+        self.directions = directions
+    }
+    
+    // initializer to create an empty recipe
+    init() {
+        self.init(mainInformation: MainInformation(name: "", description: "", author: "", category: .breakfast), ingredients: [], directions: [])
+      }
 }
 
 struct MainInformation {
@@ -18,6 +37,10 @@ struct MainInformation {
     var description: String
     var author: String
     var category: Category
+    
+    var isValid: Bool {
+        return !name.isEmpty && !description.isEmpty && !author.isEmpty && !category.rawValue.isEmpty
+    }
     
     enum Category: String, CaseIterable {
         case breakfast = "Breakfast"
